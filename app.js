@@ -27,10 +27,28 @@ app.get("/", (req, res) => {
 
 // In case we get a request for the route that we have not specified
 app.get("*", (req, res) => {
+    //TODO import the code and error from a constant file
   res.status(404).json({error: `Couldn't find the route.`});
 });
+const readDataFromFiles = async function(){
+    let files = ['./datasets/salary_survey-1.json', './datasets/salary_survey-2.json', './datasets/salary_survey-3.json']
+    let salary_data = []
+    for (file of files){
+        let data = require(file)
+        salary_data = [...salary_data,...data]
+    }
+    return salary_data
+}
 
-app.listen(port, () => {
-    // At this point your app has started listening to requests
-    console.log("running on ", port);
-});
+readDataFromFiles().then((data)=>{
+    salary_data = data 
+    app.listen(port, () => {
+        // At this point your app has started listening to requests
+        console.log("running on ", port);
+    });
+}).catch(error=>{
+    console.error(error)
+})
+
+
+
